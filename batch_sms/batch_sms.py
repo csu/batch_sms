@@ -4,7 +4,7 @@ from twilio.rest import TwilioRestClient
 
 def sms_worker(to_queue, from_num, client, body):
     try:
-        for to_num in iter(to_queue.get, 'SENTINEL'):
+        for to_num in iter(to_queue.get, 'END'):
             send_single_sms(client, body, to_num, from_num)
     except:
         pass
@@ -53,7 +53,7 @@ class BatchSMS:
         for from_num in from_numbers:
             p = Process(target=sms_worker, args=(to_queue, from_num, self.client, body))
             p.start()
-            to_queue.put('SENTINEL')
+            to_queue.put('END')
 
         for p in processes:
             p.join()
