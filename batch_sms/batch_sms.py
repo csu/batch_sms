@@ -1,4 +1,5 @@
-from multiprocessing import Process, Queue
+from threading import Thread
+from Queue import Queue
 
 from twilio.rest import TwilioRestClient
 
@@ -51,9 +52,9 @@ class BatchSMS:
 
         processes = []
         for from_num in from_numbers:
-            p = Process(target=sms_worker, args=(to_queue, from_num, self.client, body))
-            p.start()
+            t = Thread(target=sms_worker, args=(to_queue, from_num, self.client, body))
+            t.start()
             to_queue.put('END')
 
-        for p in processes:
-            p.join()
+        for t in processes:
+            t.join()
