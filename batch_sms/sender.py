@@ -4,4 +4,4 @@ class Sender:
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def send_message(self): pass
+    def send(self, body, to_number, from_number, media_url=None, callback=None): pass

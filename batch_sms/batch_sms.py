@@ -3,36 +3,17 @@ from Queue import Queue
 
 from twilio.rest import TwilioRestClient
 
-def sms_worker(to_queue, from_num, client, body):
+def sms_worker(sender, body, to_queue, from_num):
     try:
         for to_num in iter(to_queue.get, 'END'):
-            send_single_sms(client, body, to_num, from_num)
+            sender.send(body, to_num, from_num)
     except:
         pass
     return True
 
-def send_single_sms(client, body, to_number, from_number, media_url=None, callback=None):
-    message = client.messages.create(body=body,
-        to=to_number,
-        from_=from_number,
-        media_url=media_url)
-    
-    if callback:
-        payload = {
-            'sid': str(message.sid),
-            'body': body,
-            'to': to_number,
-            'from': from_number
-        }
-        if media_url:
-            payload['media_url'] = media_url
-        callback(payload)
-
 class BatchSMS:
-    def __init__(self, account_sid, auth_token, from_numbers=None):
-        self.account_sid = account_sid
-        self.auth_token = auth_token
-        self.client = TwilioRestClient(self.account_sid, self.auth_token)
+    def __init__(self, sender, from_numbers=None):
+        self.sender = sender
 
         if from_numbers:
             self.from_numbers = from_numbers
@@ -52,7 +33,7 @@ class BatchSMS:
 
         processes = []
         for from_num in from_numbers:
-            t = Thread(target=sms_worker, args=(to_queue, from_num, self.client, body))
+            t = Thread(target=sms_worker, args=(self.sender, body, to_queue, from_num))
             t.start()
             to_queue.put('END')
 
