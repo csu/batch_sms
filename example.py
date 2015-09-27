@@ -1,7 +1,7 @@
 from batch_sms import BatchSMS, Twilio
-from secrets import ACCOUNT_SID, AUTH_TOKEN
+from secrets import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
 
-sender = Twilio(ACCOUNT_SID, AUTH_TOKEN)
+sender = Twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 batcher = BatchSMS(sender)
 
 body = 'hello, this is my message'
