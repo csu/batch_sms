@@ -3,10 +3,10 @@ from Queue import Queue
 
 from twilio.rest import TwilioRestClient
 
-def sms_worker(sender, body, to_queue, from_num):
+def sms_worker(sender, message_body, to_queue, from_num):
     try:
         for to_num in iter(to_queue.get, 'END'):
-            sender.send(body, to_num, from_num)
+            sender.send(message_body, to_num, from_num)
     except:
         pass
     return True
@@ -26,14 +26,14 @@ class BatchSMS:
     def remove_from_number(self, number):
         self.from_numbers.remove(number)
 
-    def send_sms(self, body, to_numbers, media_url=None):
+    def send_sms(self, message_body, to_numbers, media_url=None):
         to_queue = Queue()
         for num in to_numbers:
             to_queue.put(num)
 
         processes = []
         for from_num in from_numbers:
-            t = Thread(target=sms_worker, args=(self.sender, body, to_queue, from_num))
+            t = Thread(target=sms_worker, args=(self.sender, message_body, to_queue, from_num))
             t.start()
             to_queue.put('END')
 
