@@ -2,7 +2,7 @@ from sender import Sender
 
 from twilio.rest import TwilioRestClient
 
-class Twilio(Sender):
+class TwilioSender(Sender):
     def __init__(self, account_sid, auth_token):
         self.client = TwilioRestClient(account_sid, auth_token)
 
@@ -21,4 +21,5 @@ class Twilio(Sender):
             }
             if media_url:
                 payload['media_url'] = media_url
+
             callback(payload)
