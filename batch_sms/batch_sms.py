@@ -16,7 +16,10 @@ class BatchSMS:
         self.sender = sender
 
         if from_numbers:
-            self.from_numbers = from_numbers
+            if isinstance(list, from_numbers):
+                self.from_numbers = from_numbers
+            else:
+                self.from_numbers = [from_numbers]
         else:
             self.from_numbers = []
 
@@ -27,6 +30,9 @@ class BatchSMS:
         self.from_numbers.remove(number)
 
     def send_sms(self, message_body, to_numbers, media_url=None, callback=None):
+        if not isinstance(list, to_numbers):
+            to_numbers = [to_numbers]
+
         to_queue = Queue()
         for num in to_numbers:
             to_queue.put(num)
