@@ -11,7 +11,38 @@ def sms_worker(sender, message_body, to_queue, from_num, callback=None):
         pass
     return True
 
+def sms_associated(sender, message_body, to_numbers, from_num, callback=None):
+    try:
+        for to_num in to_numbers:
+            sender.send(message_body, to_num, from_num, callback=callback)
+    except:
+        print "failure"
+    return True
+
 class BatchSMS:
+    def __init__(self, sender):
+        self.sender = sender
+
+    def send_sms(self, message_body, numbers, media_url=None, callback=None):
+        """
+        numbers: {
+            "from_number": [
+                "to_numbers",
+                "to_numbers",
+                "to_numbers"
+            ]
+        }
+        """
+        processes = []
+        for key, value in numbers.iteritems():
+            t = Thread(target=sms_associated, args=(self.sender, message_body, value, key, callback))
+            processes.append(t)
+            t.start()
+
+        for t in processes:
+            t.join()
+
+class BatchSMSUnassociated:
     def __init__(self, sender, from_numbers=None):
         self.sender = sender
 
@@ -42,6 +73,7 @@ class BatchSMS:
             t = Thread(target=sms_worker, args=(self.sender, message_body, to_queue, from_num, callback))
             t.start()
             to_queue.put('END')
+            processes.append(t)
 
         for t in processes:
             t.join()
