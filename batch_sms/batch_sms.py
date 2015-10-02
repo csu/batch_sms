@@ -12,11 +12,8 @@ def sms_worker(sender, message_body, to_queue, from_num, callback=None):
     return True
 
 def sms_associated(sender, message_body, to_numbers, from_num, callback=None):
-    try:
-        for to_num in to_numbers:
-            sender.send(message_body, to_num, from_num, callback=callback)
-    except:
-        print "failure"
+    for to_num in to_numbers:
+        sender.send(message_body, to_num, from_num, callback=callback)
     return True
 
 class BatchSMS:
