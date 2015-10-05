@@ -1,6 +1,6 @@
-from batch_sender import BatchSender
-
 from threading import Thread
+
+from batch_sender import BatchSender
 
 def sms_associated(sender, message_body, to_numbers, from_num, callback=None):
     for to_num in to_numbers:
