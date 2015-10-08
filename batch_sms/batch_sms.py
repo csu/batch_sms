@@ -4,6 +4,7 @@ class BatchSMS:
     def __init__(self, db_file, batch_sender, auto_associate=False):
         self.db = dataset.connect('sqlite:///%s' % db_file)
         self.batch_sender = batch_sender
+        self.auto_associate = auto_associate
 
         # prepare db
         self.from_numbers = self.db.get_table('from_numbers', primary_id='number', primary_type='String')
@@ -22,6 +23,14 @@ class BatchSMS:
     # To Numbers
     def add_to_number(self, to_num):
         self.to_numbers.upsert(dict(number=to_num), ['number'])
+
+        # If auto association is enabled, we will automatically
+        # assign new to numbers to the from number with the
+        # fewest associations.
+        # This could be further optimized for consecutive adds.
+        if self.auto_associate:
+            min_from_num = self.from_num_with_fewest_associations()
+            self.associate(to_num, min_from_num)
 
     def remove_to_number(self, to_num):
         self.to_numbers.delete(number=to_num)
@@ -72,7 +81,7 @@ class BatchSMS:
 
             if association is None:
                 raise ValueError('No association found for ' + to_num['to_num'])
-                
+
             from_num = association['from_num']
             if not from_num in sub_list_nums:
                 sub_list_nums[from_num] = []
