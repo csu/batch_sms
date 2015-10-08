@@ -1,3 +1,5 @@
+from batch_sms import BatchSMS
+
 from batch_sender import BatchSender
 from simple_batch_sender import SimpleBatchSender
 from associated_batch_sender import AssociatedBatchSender
