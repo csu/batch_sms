@@ -20,6 +20,7 @@ client.associate('+15005550012', '+15005550006')
 client.associate('+15005550013', '+15005550006')
 
 sub_id = client.create_subscription_list('Hackers')
+print sub_id
 client.add_to_subscription('+15005550010', sub_id)
 client.add_to_subscription('+15005550011', sub_id)
 client.add_to_subscription('+15005550012', sub_id)
