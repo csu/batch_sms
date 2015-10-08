@@ -1,7 +1,7 @@
 import dataset
 
 class BatchSMS:
-    def __init__(self, db_file, batch_sender):
+    def __init__(self, db_file, batch_sender, auto_associate=False):
         self.db = dataset.connect('sqlite:///%s' % db_file)
         self.batch_sender = batch_sender
 
@@ -69,6 +69,10 @@ class BatchSMS:
         sub_list_nums = {}
         for to_num in to_nums:
             association = self.associations.find_one(to_num=to_num['to_num'])
+
+            if association is None:
+                raise ValueError('No association found for ' + to_num['to_num'])
+                
             from_num = association['from_num']
             if not from_num in sub_list_nums:
                 sub_list_nums[from_num] = []
