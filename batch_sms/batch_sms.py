@@ -32,7 +32,6 @@ class BatchSMS:
 
     # Subscription Lists
     def create_subscription_list(self, name):
-        # TODO: ensure this returns id
         return self.subscription_lists.insert({'name': name})
 
     def update_subscription_list(self, subscription_id, name):
@@ -51,9 +50,9 @@ class BatchSMS:
         to_nums = self.subscriptions.find(subscription=subscription_id)
         sub_list_nums = {}
         for to_num in to_nums:
-            association = self.associations.find_one(to_num=to_num)
+            association = self.associations.find_one(to_num=to_num['to_num'])
             from_num = association['from_num']
-            if not form_num in sub_list_nums:
+            if not from_num in sub_list_nums:
                 sub_list_nums[from_num] = []
-            sub_list_nums[from_num].append(to_num)
+            sub_list_nums[from_num].append(to_num['to_num'])
         self.batch_sender.send_sms(message_body, sub_list_nums, callback=callback)
