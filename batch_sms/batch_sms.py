@@ -44,6 +44,7 @@ class BatchSMS:
         return self.db.query('SELECT from_num, COUNT(*) c FROM associations GROUP BY from_num')
 
     def from_num_with_fewest_associations(self):
+        # TODO: fix bug. numbers with no associations should have count 0
         res = self.db.query('SELECT from_num, MIN(c) FROM (SELECT from_num, COUNT(*) c FROM associations GROUP BY from_num)')
         for row in res:
             return row['from_num']
@@ -69,7 +70,8 @@ class BatchSMS:
 
     # Subscriptions
     def add_to_subscription(self, to_num, subscription_id):
-        # subscription should be a foreign key,
+        # TODO: Accept lists of to numbers
+        # Subscription should be a foreign key,
         # but I'm too lazy to use a full-blown ORM for this
         self.subscriptions.insert({'to_num': to_num, 'subscription': subscription_id})
 
