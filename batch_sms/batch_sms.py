@@ -26,9 +26,18 @@ class BatchSMS:
     def remove_to_number(self, to_num):
         self.to_numbers.delete(number=to_num)
 
+    # Associations
     def associate(self, to_num, from_num):
         # these should both be foreign keys, but too lazy to use ORM
         self.associations.upsert(dict(to_num=to_num, from_num=from_num), ['to_num'])
+
+    def from_num_associations(self):
+        return self.db.query('SELECT from_num, COUNT(*) c FROM associations GROUP BY from_num')
+
+    def from_num_with_fewest_associations(self):
+        res = self.db.query('SELECT from_num, MIN(c) FROM (SELECT from_num, COUNT(*) c FROM associations GROUP BY from_num)')
+        for row in res:
+            return row['from_num']
 
     # Subscription Lists
     def create_subscription_list(self, name):
