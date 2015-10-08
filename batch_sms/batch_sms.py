@@ -32,7 +32,8 @@ class BatchSMS:
 
     # Subscription Lists
     def create_subscription_list(self, name):
-        self.subscription_lists.insert({'name': name})
+        # TODO: ensure this returns id
+        return self.subscription_lists.insert({'name': name})
 
     def update_subscription_list(self, subscription_id, name):
         self.subscription_lists.update({'id': subscription_id, 'name': name}, ['id'])
