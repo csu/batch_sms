@@ -12,12 +12,14 @@ class BatchSMS:
         self.subscription_lists = self.db.get_table('subscription_lists')
         self.subscriptions = self.db.get_table('subscriptions')
 
+    # From Numbers
     def add_from_number(self, from_num):
         self.from_numbers.upsert(dict(number=from_num), ['number'])
 
     def remove_from_number(self, from_num):
         self.from_numbers.delete(number=from_num)
 
+    # To Numbers
     def add_to_number(self, to_num):
         self.to_numbers.upsert(dict(number=to_num), ['number'])
 
@@ -27,6 +29,7 @@ class BatchSMS:
     def associate(self, to_num, from_num):
         self.associations.upsert(dict(to_num=to_num, from_num=from_num), ['to_num'])
 
+    # Subscription Lists
     def create_subscription_list(self, name):
         self.subscription_lists.insert({'name': name})
 
@@ -36,6 +39,7 @@ class BatchSMS:
     def get_subscription_lists_by_name(self, name):
         return self.subscription_lists.find(name=name)
 
+    # Subscriptions
     def add_to_subscription(self, to_num, subscription_id):
         # subscription should be a foreign key,
         # but I'm too lazy to use a full-blown ORM for this
