@@ -39,6 +39,15 @@ class BatchSMS:
         for row in res:
             return row['from_num']
 
+    @staticmethod
+    def min_from_num_in_associations(associations, count_key):
+        """
+        Returns the dict for the association in associations,
+        a list of associations as dicts, with the lowest value
+        for count_key.
+        """
+        return min(associations, key=lambda x:x[count_key])
+
     # Subscription Lists
     def create_subscription_list(self, name):
         return self.subscription_lists.insert({'name': name})
