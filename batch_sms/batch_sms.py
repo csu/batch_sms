@@ -27,6 +27,7 @@ class BatchSMS:
         self.to_numbers.delete(number=to_num)
 
     def associate(self, to_num, from_num):
+        # these should both be foreign keys, but too lazy to use ORM
         self.associations.upsert(dict(to_num=to_num, from_num=from_num), ['to_num'])
 
     # Subscription Lists
