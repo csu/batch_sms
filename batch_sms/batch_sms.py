@@ -51,7 +51,12 @@ class BatchSMS:
         return self.db.query('SELECT from_num, COUNT(*) c FROM associations GROUP BY from_num')
 
     def from_num_with_fewest_associations(self):
-        res = self.db.query('SELECT number, min(c) FROM (SELECT number, COUNT(to_num) c FROM from_numbers LEFT OUTER JOIN associations ON from_numbers.number = associations.from_num GROUP BY number)')
+        res = self.db.query('''SELECT number, min(c)
+            FROM (SELECT number, COUNT(to_num) c
+                FROM from_numbers
+                LEFT OUTER JOIN associations
+                ON from_numbers.number = associations.from_num
+                GROUP BY number)''')
         for row in res:
             return row['number']
 
