@@ -89,10 +89,8 @@ class BatchSMS:
         sub_list_nums = {}
         for to_num in to_nums:
             association = self.associations.find_one(to_num=to_num['to_num'])
-
             if association is None:
                 raise ValueError('No association found for ' + to_num['to_num'])
-
             from_num = association['from_num']
             if not from_num in sub_list_nums:
                 sub_list_nums[from_num] = []
