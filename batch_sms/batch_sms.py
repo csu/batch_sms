@@ -1,4 +1,5 @@
 import dataset
+from sqlalchemy import String
 
 class BatchSMS:
     def __init__(self, db_file, batch_sender, auto_associate=False):
@@ -12,6 +13,8 @@ class BatchSMS:
         self.associations = self.db.get_table('associations', primary_id='to_num', primary_type='String')
         self.subscription_lists = self.db.get_table('subscription_lists')
         self.subscriptions = self.db.get_table('subscriptions')
+
+        self.associations.create_column('from_num', String)
 
     # From Numbers
     def add_from_number(self, from_num):
@@ -44,10 +47,9 @@ class BatchSMS:
         return self.db.query('SELECT from_num, COUNT(*) c FROM associations GROUP BY from_num')
 
     def from_num_with_fewest_associations(self):
-        # TODO: fix bug. numbers with no associations should have count 0
-        res = self.db.query('SELECT from_num, MIN(c) FROM (SELECT from_num, COUNT(*) c FROM associations GROUP BY from_num)')
+        res = self.db.query('SELECT number, min(c) FROM (SELECT number, COUNT(to_num) c FROM from_numbers LEFT OUTER JOIN associations ON from_numbers.number = associations.from_num GROUP BY number)')
         for row in res:
-            return row['from_num']
+            return row['number']
 
     @staticmethod
     def min_from_num_in_associations(associations, count_key):
@@ -70,7 +72,10 @@ class BatchSMS:
 
     # Subscriptions
     def add_to_subscription(self, to_num, subscription_id):
-        # TODO: Accept lists of to numbers
+        if isinstance(to_num, list):
+            for n in to_num:
+                self.subscriptions.insert({'to_num': n, 'subscription': subscription_id})
+
         # Subscription should be a foreign key,
         # but I'm too lazy to use a full-blown ORM for this
         self.subscriptions.insert({'to_num': to_num, 'subscription': subscription_id})
