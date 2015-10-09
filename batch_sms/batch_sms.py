@@ -24,7 +24,7 @@ class BatchSMS:
         self.from_numbers.delete(number=from_num)
 
     # To Numbers
-    def add_to_number(self, to_num):
+    def add_to_number(self, to_num, subs=None):
         self.to_numbers.upsert(dict(number=to_num), ['number'])
 
         # If auto association is enabled, we will automatically
@@ -34,6 +34,10 @@ class BatchSMS:
         if self.auto_associate:
             min_from_num = self.from_num_with_fewest_associations()
             self.associate(to_num, min_from_num)
+
+        if subs:
+            for sub_id in sub:
+                self.add_to_subscription(to_num, sub_id)
 
     def remove_to_number(self, to_num):
         self.to_numbers.delete(number=to_num)
