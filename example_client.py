@@ -7,18 +7,15 @@ sender = TwilioSender(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 batch_sender = AssociatedBatchSender(sender)
 client = BatchSMS('test.db', batch_sender, auto_associate=True)
 
+sub_id = client.create_subscription_list('Hackers')
+
 client.add_from_number('+15005550006')
 
-client.add_to_number('+15005550010')
-client.add_to_number('+15005550011')
-client.add_to_number('+15005550012')
-client.add_to_number('+15005550013')
-
-sub_id = client.create_subscription_list('Hackers')
-client.add_to_subscription('+15005550010', sub_id)
-client.add_to_subscription('+15005550011', sub_id)
-client.add_to_subscription('+15005550012', sub_id)
-client.add_to_subscription('+15005550013', sub_id)
+subs = [sub_id]
+client.add_to_number('+15005550010', subs=subs)
+client.add_to_number('+15005550011', subs=subs)
+client.add_to_number('+15005550012', subs=subs)
+client.add_to_number('+15005550013', subs=subs)
 
 def callback(payload):
     print payload

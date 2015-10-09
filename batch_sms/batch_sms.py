@@ -36,7 +36,7 @@ class BatchSMS:
             self.associate(to_num, min_from_num)
 
         if subs:
-            for sub_id in sub:
+            for sub_id in subs:
                 self.add_to_subscription(to_num, sub_id)
 
     def remove_to_number(self, to_num):
