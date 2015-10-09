@@ -5,6 +5,7 @@ from secrets import TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
 
 sender = TwilioSender(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 batch_sender = AssociatedBatchSender(sender)
+# client = BatchSMS('test.db', batch_sender, auto_associate=True)
 client = BatchSMS('test.db', batch_sender, auto_associate=True)
 
 client.add_from_number('+15005550006')
