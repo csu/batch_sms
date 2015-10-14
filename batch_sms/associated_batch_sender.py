@@ -4,7 +4,10 @@ from batch_sender import BatchSender
 
 def sms_associated(sender, message_body, to_numbers, from_num, callback=None):
     for to_num in to_numbers:
-        sender.send(message_body, to_num, from_num, callback=callback)
+        try:
+            sender.send(message_body, to_num, from_num, callback=callback)
+        except:
+            print 'FAILED TO SEND TO %s FROM %s' % (to_num, from_num)
     return True
 
 class AssociatedBatchSender(BatchSender):
