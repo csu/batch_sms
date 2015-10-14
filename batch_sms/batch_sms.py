@@ -77,7 +77,9 @@ class BatchSMS:
         self.subscription_lists.update({'id': subscription_id, 'name': name}, ['id'])
 
     def get_subscription_lists_by_name(self, name):
-        return self.subscription_lists.find(name=name)
+        sub_id = self.subscription_lists.find(name=name)
+        for row in sub_id:
+            return row['id']
 
     # Subscriptions
     def add_to_subscription(self, to_num, subscription_id):
