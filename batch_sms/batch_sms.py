@@ -100,6 +100,6 @@ class BatchSMS:
                 raise ValueError('No association found for ' + to_num['to_num'])
             from_num = association['from_num']
             if not from_num in sub_list_nums:
-                sub_list_nums[from_num] = []
+                sub_list_nums[from_num] = set()
             sub_list_nums[from_num].append(to_num['to_num'])
         self.batch_sender.send_sms(message_body, sub_list_nums, callback=callback, on_fail=on_fail)
