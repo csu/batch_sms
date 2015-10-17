@@ -1,3 +1,4 @@
+*.csv
 *.db
 secrets.py
 
