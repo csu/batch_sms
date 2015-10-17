@@ -2,12 +2,17 @@ from threading import Thread
 
 from batch_sender import BatchSender
 
-def sms_associated(sender, message_body, to_numbers, from_num, callback=None):
+def sms_associated(sender, message_body, to_numbers, from_num, callback=None, on_fail=None):
     for to_num in to_numbers:
         try:
             sender.send(message_body, to_num, from_num, callback=callback)
         except:
-            print 'FAILED TO SEND TO %s FROM %s' % (to_num, from_num)
+            if on_fail:
+                on_fail({
+                    'message': message_body,
+                    'to_num': to_num,
+                    'from_num': from_num
+                })
     return True
 
 class AssociatedBatchSender(BatchSender):

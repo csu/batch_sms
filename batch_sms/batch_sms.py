@@ -91,7 +91,7 @@ class BatchSMS:
         # but I'm too lazy to use a full-blown ORM for this
         self.subscriptions.insert({'to_num': to_num, 'subscription': subscription_id})
 
-    def send_to_subscription(self, subscription_id, message_body, callback=None):
+    def send_to_subscription(self, subscription_id, message_body, callback=None, on_fail=None):
         to_nums = self.subscriptions.find(subscription=subscription_id)
         sub_list_nums = {}
         for to_num in to_nums:
@@ -102,4 +102,4 @@ class BatchSMS:
             if not from_num in sub_list_nums:
                 sub_list_nums[from_num] = []
             sub_list_nums[from_num].append(to_num['to_num'])
-        self.batch_sender.send_sms(message_body, sub_list_nums, callback=callback)
+        self.batch_sender.send_sms(message_body, sub_list_nums, callback=callback, on_fail=on_fail)
