@@ -19,7 +19,7 @@ class AssociatedBatchSender(BatchSender):
     def __init__(self, sender):
         self.sender = sender
 
-    def send_sms(self, message_body, numbers, media_url=None, callback=None):
+    def send_sms(self, message_body, numbers, media_url=None, callback=None, on_fail=None):
         """
         numbers: {
             "from_number": [
@@ -31,7 +31,7 @@ class AssociatedBatchSender(BatchSender):
         """
         processes = []
         for key, value in numbers.iteritems():
-            t = Thread(target=sms_associated, args=(self.sender, message_body, value, key, callback))
+            t = Thread(target=sms_associated, args=(self.sender, message_body, value, key, callback, on_fail))
             processes.append(t)
             t.start()
 
