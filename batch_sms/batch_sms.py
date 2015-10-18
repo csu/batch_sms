@@ -91,6 +91,7 @@ class BatchSMS:
         # but I'm too lazy to use a full-blown ORM for this
         self.subscriptions.insert({'to_num': to_num, 'subscription': subscription_id})
 
+    # Message sending
     def send_to_subscription(self, subscription_id, message_body, callback=None, on_fail=None):
         to_nums = self.subscriptions.find(subscription=subscription_id)
         sub_list_nums = {}
@@ -102,4 +103,23 @@ class BatchSMS:
             if not from_num in sub_list_nums:
                 sub_list_nums[from_num] = set()
             sub_list_nums[from_num].add(to_num['to_num'])
+        self.batch_sender.send_sms(message_body, sub_list_nums, callback=callback, on_fail=on_fail)
+
+    def send_to_subscriptions(self, sub_ids, message_body, callback=None, on_fail=None):
+        to_nums = set()
+        for sub_id in sub_ids:
+            sub_nums = self.subscriptions.find(subscription=sub_id)
+            for num in sub_nums:
+                to_nums.add(num['to_num'])
+
+        sub_list_nums = {}
+        for to_num in to_nums:
+            association = self.associations.find_one(to_num=to_num)
+            if association is None:
+                raise ValueError('No association found for ' + to_num)
+            from_num = association['from_num']
+            if not from_num in sub_list_nums:
+                sub_list_nums[from_num] = set()
+            sub_list_nums[from_num].add(to_num)
+            
         self.batch_sender.send_sms(message_body, sub_list_nums, callback=callback, on_fail=on_fail)
