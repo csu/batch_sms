@@ -11,7 +11,7 @@ class BatchSMS:
         self.from_numbers = self.db.get_table('from_numbers', primary_id='number', primary_type='String')
         self.to_numbers = self.db.get_table('to_numbers', primary_id='number', primary_type='String')
         self.associations = self.db.get_table('associations', primary_id='to_num', primary_type='String')
-        self.subscription_lists = self.db.get_table('subscription_lists')
+        self.subscription_lists = self.db.get_table('subscription_lists', primary_id='name', primary_type='String')
         self.subscriptions = self.db.get_table('subscriptions')
 
         self.associations.create_column('from_num', String)
