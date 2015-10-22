@@ -1,5 +1,2 @@
-# batch-sms
-Send bulk SMS in batches with the Twilio API. Made to send notifications for DubHacks.
-
-## Usage
-See `example_client.py`.
+# Batch SMS
+Send large amounts of SMS with the Twilio API. For a detailed overview and instructions, see: http://christopher.su/2015/text-announcements/.
