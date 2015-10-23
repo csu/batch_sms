@@ -80,6 +80,13 @@ class BatchSMS:
         sub_id = self.subscription_lists.find(name=name)
         for row in sub_id:
             return row['id']
+        return None
+
+    def get_or_create_subscription_list(self, name):
+        existing = self.get_subscription_lists_by_name(name)
+        if existing:
+            return existing
+        return self.create_subscription_list(name)
 
     # Subscriptions
     def add_to_subscription(self, to_num, subscription_id):
