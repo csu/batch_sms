@@ -88,6 +88,12 @@ class BatchSMS:
             return existing
         return self.create_subscription_list(name)
 
+    def delete_subscription_list(self, subscription_id):
+        """
+        Deletes a subscription list and all subscriptions for it.
+        """
+        pass
+
     # Subscriptions
     def add_to_subscription(self, to_num, subscription_id):
         if isinstance(to_num, list):
