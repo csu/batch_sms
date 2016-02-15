@@ -6,19 +6,24 @@ from threading import Thread
 
 from batch_sender import BatchSender
 
-def sms_associated(sender, message_body, to_numbers, from_num, callback=None):
+def sms_associated(sender, message_body, to_numbers, from_num, callback=None, on_fail=None):
     for to_num in to_numbers:
         try:
             sender.send(message_body, to_num, from_num, callback=callback)
         except:
-            print 'FAILED TO SEND TO %s FROM %s' % (to_num, from_num)
+            if on_fail:
+                on_fail({
+                    'message': message_body,
+                    'to_num': to_num,
+                    'from_num': from_num
+                })
     return True
 
 class AssociatedBatchSender(BatchSender):
     def __init__(self, sender):
         self.sender = sender
 
-    def send_sms(self, message_body, numbers, media_url=None, callback=None):
+    def send_sms(self, message_body, numbers, media_url=None, callback=None, on_fail=None):
         """
         numbers: {
             "from_number": [
@@ -30,7 +35,7 @@ class AssociatedBatchSender(BatchSender):
         """
         processes = []
         for key, value in numbers.iteritems():
-            t = Thread(target=sms_associated, args=(self.sender, message_body, value, key, callback))
+            t = Thread(target=sms_associated, args=(self.sender, message_body, value, key, callback, on_fail))
             processes.append(t)
             t.start()
 
