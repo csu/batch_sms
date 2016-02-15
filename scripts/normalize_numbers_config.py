@@ -1,3 +1,7 @@
+# Batch SMS
+# Christopher J. Su
+# Copyright (c) 2015
+
 # confirm_col = 3
 # phone_col = 8
 # filename = 'attendees'
