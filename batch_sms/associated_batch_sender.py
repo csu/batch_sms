@@ -1,3 +1,7 @@
+# Batch SMS
+# Christopher J. Su
+# Copyright (c) 2015
+
 from threading import Thread
 
 from batch_sender import BatchSender
