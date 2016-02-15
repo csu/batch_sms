@@ -15,7 +15,7 @@ class BatchSMS:
         self.from_numbers = self.db.get_table('from_numbers', primary_id='number', primary_type='String')
         self.to_numbers = self.db.get_table('to_numbers', primary_id='number', primary_type='String')
         self.associations = self.db.get_table('associations', primary_id='to_num', primary_type='String')
-        self.subscription_lists = self.db.get_table('subscription_lists')
+        self.subscription_lists = self.db.get_table('subscription_lists', primary_id='name', primary_type='String')
         self.subscriptions = self.db.get_table('subscriptions')
 
         self.associations.create_column('from_num', String)
@@ -84,6 +84,19 @@ class BatchSMS:
         sub_id = self.subscription_lists.find(name=name)
         for row in sub_id:
             return row['id']
+        return None
+
+    def get_or_create_subscription_list(self, name):
+        existing = self.get_subscription_lists_by_name(name)
+        if existing:
+            return existing
+        return self.create_subscription_list(name)
+
+    def delete_subscription_list(self, subscription_id):
+        """
+        Deletes a subscription list and all subscriptions for it.
+        """
+        pass
 
     # Subscriptions
     def add_to_subscription(self, to_num, subscription_id):
@@ -95,7 +108,8 @@ class BatchSMS:
         # but I'm too lazy to use a full-blown ORM for this
         self.subscriptions.insert({'to_num': to_num, 'subscription': subscription_id})
 
-    def send_to_subscription(self, subscription_id, message_body, callback=None):
+    # Message sending
+    def send_to_subscription(self, subscription_id, message_body, callback=None, on_fail=None):
         to_nums = self.subscriptions.find(subscription=subscription_id)
         sub_list_nums = {}
         for to_num in to_nums:
@@ -104,6 +118,25 @@ class BatchSMS:
                 raise ValueError('No association found for ' + to_num['to_num'])
             from_num = association['from_num']
             if not from_num in sub_list_nums:
-                sub_list_nums[from_num] = []
-            sub_list_nums[from_num].append(to_num['to_num'])
-        self.batch_sender.send_sms(message_body, sub_list_nums, callback=callback)
+                sub_list_nums[from_num] = set()
+            sub_list_nums[from_num].add(to_num['to_num'])
+        self.batch_sender.send_sms(message_body, sub_list_nums, callback=callback, on_fail=on_fail)
+
+    def send_to_subscriptions(self, sub_ids, message_body, callback=None, on_fail=None):
+        to_nums = set()
+        for sub_id in sub_ids:
+            sub_nums = self.subscriptions.find(subscription=sub_id)
+            for num in sub_nums:
+                to_nums.add(num['to_num'])
+
+        sub_list_nums = {}
+        for to_num in to_nums:
+            association = self.associations.find_one(to_num=to_num)
+            if association is None:
+                raise ValueError('No association found for ' + to_num)
+            from_num = association['from_num']
+            if not from_num in sub_list_nums:
+                sub_list_nums[from_num] = set()
+            sub_list_nums[from_num].add(to_num)
+            
+        self.batch_sender.send_sms(message_body, sub_list_nums, callback=callback, on_fail=on_fail)

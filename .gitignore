@@ -1,3 +1,5 @@
+*.txt
+*.csv
 *.db
 secrets.py
 
