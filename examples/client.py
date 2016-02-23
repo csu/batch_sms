@@ -18,6 +18,6 @@ client.add_to_number('+15005550012', subs=subs)
 client.add_to_number('+15005550013', subs=subs)
 
 def callback(payload):
-    print payload
+  print payload
 
 client.send_to_subscription(sub_id, 'Hello World', callback=callback)
