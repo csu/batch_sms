@@ -3,10 +3,10 @@ import re
 
 numbers = []
 with open(('%s.csv' % filename), 'rb') as csvfile:
-    data = csv.reader(csvfile, delimiter=',')
-    for row in data:
-        if not confirm_col or row[confirm_col] is '1':
-            numbers.append(row[phone_col])
+  data = csv.reader(csvfile, delimiter=',')
+  for row in data:
+    if not confirm_col or row[confirm_col] is '1':
+      numbers.append(row[phone_col])
 
 pre_filter_count = len(numbers)
 
@@ -20,5 +20,5 @@ print numbers
 print len(numbers)
 
 with open(('%s.txt' % filename), 'w') as f:
-    for i in numbers:
-        f.write(i + '\n')
+  for i in numbers:
+    f.write(i + '\n')
