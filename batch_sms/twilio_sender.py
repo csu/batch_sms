@@ -1,3 +1,7 @@
+# Batch SMS
+# Christopher J. Su
+# Copyright (c) 2015
+
 from sender import Sender
 
 from twilio.rest import TwilioRestClient
