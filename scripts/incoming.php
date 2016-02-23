@@ -1,4 +1,10 @@
 <?php
+/*
+  Batch SMS
+  Christopher J. Su
+  Copyright (c) 2015
+*/
+
 header('Content-Type: text/html');
 ?>
 <Response>

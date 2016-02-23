@@ -1,3 +1,7 @@
+# Batch SMS
+# Christopher J. Su
+# Copyright (c) 2015
+
 from threading import current_thread
 
 from batch_sms import AssociatedBatchSender, TwilioSender
